@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.papermc.paper:paper-api:1.19-R0.1-SNAPSHOT'
+    implementation 'io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT'
 }
 
 tasks.register('preRunServer'){
@@ -33,9 +33,9 @@ tasks.register('preRunServer'){
         Files.copy(pluginPath.toPath(),filef.toPath(), StandardCopyOption.REPLACE_EXISTING)
 
         // new method
-        def paperClipJar = new File(runDir + "/paper-1.19-81.jar")
+        def paperClipJar = new File(runDir + "/paper-1.21.4-126.jar")
         if (!paperClipJar.exists()) {
-            new URL('https://api.papermc.io/v2/projects/paper/versions/1.19/builds/81/downloads/paper-1.19-81.jar').withInputStream{ i -> paperClipJar.withOutputStream{ it << i }}
+            new URL('https://api.papermc.io/v2/projects/paper/versions/1.21.4/builds/126/downloads/paper-1.21.4-126.jar').withInputStream{ i -> paperClipJar.withOutputStream{ it << i }}
         }
     }
 }
@@ -43,6 +43,6 @@ tasks.register('preRunServer'){
 task runServer(type: JavaExec){
     dependsOn tasks.getByName('preRunServer')
     def runDir = "${projectDir.path}/run"
-    classpath = files(runDir + '/paper-1.19-81.jar')
+    classpath = files(runDir + '/paper-1.21.4-126.jar')
     workingDir = file(runDir)
 }
