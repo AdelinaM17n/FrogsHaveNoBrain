@@ -1,0 +1,48 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
+plugins {
+    id 'java'
+}
+
+group 'com.github.maheevil'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'papermc-repo'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+}
+
+dependencies {
+    implementation 'io.papermc.paper:paper-api:1.19-R0.1-SNAPSHOT'
+}
+
+tasks.register('preRunServer'){
+    dependsOn tasks.build
+    doLast{
+        def runDir = "${projectDir.path}/run"
+        def filef = new File(runDir + '/plugins/' + this.rootProject.name + '.jar')
+        if(!filef.parentFile.exists()) {filef.parentFile.mkdirs()}
+        filef.createNewFile()
+
+        def pluginName = this.rootProject.name + '-' + this.properties.get('version') + '.jar'
+        def pluginPath = new File(projectDir.path + '/build/libs/' + pluginName)
+        Files.copy(pluginPath.toPath(),filef.toPath(), StandardCopyOption.REPLACE_EXISTING)
+
+        // new method
+        def paperClipJar = new File(runDir + "/paper-1.19-81.jar")
+        if (!paperClipJar.exists()) {
+            new URL('https://api.papermc.io/v2/projects/paper/versions/1.19/builds/81/downloads/paper-1.19-81.jar').withInputStream{ i -> paperClipJar.withOutputStream{ it << i }}
+        }
+    }
+}
+
+task runServer(type: JavaExec){
+    dependsOn tasks.getByName('preRunServer')
+    def runDir = "${projectDir.path}/run"
+    classpath = files(runDir + '/paper-1.19-81.jar')
+    workingDir = file(runDir)
+}

@@ -1,0 +1,6 @@
+name: Template
+version: '1.0.0'
+main: com.github.maheevil.template.TemplatePlugin
+api-version: 1.19
+authors: [ Maheesha ]
+description: TPs you to the wild
